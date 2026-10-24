@@ -1,6 +1,6 @@
 {
   "name": "dsh-billing-mini-tag",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "DSH plugin: show the current session's spend (¥0.00) immediately to the right of the composer cache-hit statistics pill, priced from the official token quote",
   "type": "module",
   "main": "src/index.js",

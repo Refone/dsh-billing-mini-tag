@@ -25,7 +25,7 @@ Restart `dsh web` and refresh the Web GUI, then send a message. To pin a
 release instead of tracking `main`:
 
 ```sh
-dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.2.0.tar.gz
+dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.1.0.tar.gz
 ```
 
 Update by running the same `add` command again. Remove with:

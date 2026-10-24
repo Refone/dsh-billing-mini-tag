@@ -25,7 +25,7 @@ dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 `main`：
 
 ```sh
-dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.2.0.tar.gz
+dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.1.0.tar.gz
 ```
 
 再次执行同一条 `add` 命令即可更新。卸载：

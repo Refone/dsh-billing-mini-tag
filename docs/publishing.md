@@ -45,7 +45,8 @@ gh repo edit Refone/dsh-billing-mini-tag \
 
 ## 3. 打标签与发布
 
-版本号已对齐（`package.json` = `0.2.0`）。发布新版本时：
+当前唯一版本是 **0.1.0（初始版本）**，`package.json`、CHANGELOG 与 README 中
+的固定版本链接都对齐到 `v0.1.0`。发布新版本时：
 
 ```sh
 # 1. 改 package.json#version 与 CHANGELOG.md
@@ -54,13 +55,13 @@ node scripts/check-release.mjs
 pnpm pack --dry-run
 # 3. 提交、打标签、推送
 git add -A
-git commit -m "release: v0.2.0"
-git tag -a v0.2.0 -m "dsh-billing-mini-tag v0.2.0"
+git commit -m "release: v0.1.0"
+git tag -a v0.1.0 -m "dsh-billing-mini-tag v0.1.0"
 git push origin main --tags
 ```
 
-随后在 GitHub 的 **Releases** 页面基于 `v0.2.0` 创建 Release，把
-`pnpm pack` 生成的 `dsh-billing-mini-tag-0.2.0.tgz` 作为附件上传；README 中的
+随后在 GitHub 的 **Releases** 页面基于 `v0.1.0` 创建 Release，把
+`pnpm pack` 生成的 `dsh-billing-mini-tag-0.1.0.tgz` 作为附件上传；README 中的
 固定版本安装命令依赖这个 tag 的源码包。
 
 ## 4. 可选：发布到 npm

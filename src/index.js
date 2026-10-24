@@ -189,7 +189,7 @@ async function fetchOfficialQuote() {
         accept: "text/html,application/xhtml+xml",
         "accept-language": "zh-CN,zh;q=0.9",
         "cache-control": "no-cache",
-        "user-agent": "dsh-billing-mini-tag/0.2.0",
+        "user-agent": "dsh-billing-mini-tag/0.1.0",
       },
     });
     if (!response.ok) throw new Error(`pricing HTTP ${response.status}`);

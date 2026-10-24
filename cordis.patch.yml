@@ -1,14 +1,15 @@
-# dsh-billing-mini-tag — mount the plugin into a DSH profile.
+# dsh-billing-mini-tag — profile patch for the DSH bundle.
 #
-# The node half (package.json exports ".") runs inside the host: it serves the
-# Session-cost route, folds token usage, and refreshes the official quote on
-# every Send. The browser half (exports "./client", served from /plugins by
-# dsh-client-modules) registers a dock entry that portals the small "¥0.00"
-# billing tag into the composer statistics row, right after the cache-hit pill.
+# `package.json#dsh.bundle.patch` points here, which is what tells
+# `dsh plugin add` that this package is a profile layer and not a plain
+# library dependency.
 #
-# Install from this checkout:
-#   dsh plugin --profile web add /Users/refone/Coding/dsh-billing-mini-tag
-# then refresh the Web GUI.
+# The host half (package.json export ".") serves
+# GET /plugin-billing-mini-tag/cost, folds the session's token usage, and
+# refreshes the official quote on Send. The browser half (export "./client",
+# served by dsh-client-modules) registers the dock entry that portals the small
+# `¥…` billing tag into the composer statistics row, right after the cache-hit
+# pill.
 - insert:
     - id: dsh-billing-mini-tag
-      name: 'dsh-billing-mini-tag'
+      name: dsh-billing-mini-tag

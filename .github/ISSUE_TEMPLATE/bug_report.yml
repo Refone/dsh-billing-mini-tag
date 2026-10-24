@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a problem with the composer spend tag
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please include the exact version you installed
+        (`dsh plugin --profile web ls`) and your DSH host version (`dsh --version`).
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      placeholder: "dsh-billing-mini-tag@0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: dsh-version
+    attributes:
+      label: DSH version
+      placeholder: "dsh 0.1.5-rc.3"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and browser
+      placeholder: "macOS 15, Chrome 140"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What the tag shows, what you expected, and any error in the browser console or `dsh web` output.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics (optional)
+      description: Output of `curl -s "http://127.0.0.1:3080/plugin-billing-mini-tag/cost?session=<id>"`.
+      render: json

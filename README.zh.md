@@ -34,6 +34,9 @@ dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/arch
 dsh plugin --profile web remove dsh-billing-mini-tag
 ```
 
+包内是纯 JavaScript、没有 `prepare` 脚本，因此从 GitHub 安装既不需要构建，
+也不需要 pnpm 的构建脚本授权。
+
 > 从 GitHub 安装要求宿主能访问该仓库。网络无法访问 GitHub 时，可以从
 > [Releases](https://github.com/Refone/dsh-billing-mini-tag/releases) 下载
 > tarball 后按上面的方式安装。
@@ -89,7 +92,7 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 
 ## 环境要求
 
-- DSH **web** profile。包内声明 `dsh.engines.dsh` 为 `>=0.1.5-rc.3`（开发与
+- DSH **web** profile。包内声明 `engines.dsh` 为 `>=0.1.5-rc.3`（开发与
   测试所用版本）。
 - Node.js **20 及以上**。
 - React 18 由宿主提供（peer dependency）；插件本身没有运行时依赖。

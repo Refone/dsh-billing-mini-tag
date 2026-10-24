@@ -34,6 +34,9 @@ Update by running the same `add` command again. Remove with:
 dsh plugin --profile web remove dsh-billing-mini-tag
 ```
 
+The package ships plain JavaScript with no `prepare` script, so a GitHub
+install needs neither a build step nor pnpm's build-script authorization.
+
 > Installing from GitHub requires the host to read the repository. If your
 > network cannot reach GitHub, install the npm-style tarball from the
 > [releases page](https://github.com/Refone/dsh-billing-mini-tag/releases) once
@@ -101,7 +104,7 @@ payload names them (`unknownModels`).
 
 ## Requirements
 
-- A DSH **web** profile. The package declares `dsh.engines.dsh` as
+- A DSH **web** profile. The package declares `engines.dsh` as
   `>=0.1.5-rc.3`, the version it is developed and tested against.
 - Node.js **20 or newer**.
 - React 18 is provided by the host (declared as a peer dependency); the plugin

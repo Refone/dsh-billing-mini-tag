@@ -81,6 +81,13 @@ await check("repository / homepage / bugs point at GitHub", () => {
   assert(String(manifest.bugs?.url ?? "").includes("github.com/Refone/dsh-billing-mini-tag"), "bugs.url is missing");
 });
 
+await check("engines declare the supported DSH range", () => {
+  const range = manifest.engines?.dsh;
+  assert(typeof range === "string" && range.trim() !== "", "engines.dsh is missing (required for the install compatibility gate)");
+  assert(/^[<>=~^*]/.test(range.trim()) || /^\d/.test(range.trim()), `engines.dsh "${range}" does not look like a version range`);
+  return range;
+});
+
 await check("host and client exports resolve to real files", async () => {
   const dot = manifest.exports?.["."];
   const client = manifest.exports?.["./client"];

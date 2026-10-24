@@ -11,7 +11,7 @@
 - [x] `src/index.js` 导出 `apply(ctx)` 与 `inject`
 - [x] `package.json#dsh.bundle.patch` 指向 `cordis.patch.yml`
 - [x] `dsh.client` 声明 `platform: "web"` 与宿主注入的客户端包
-- [x] `dsh.engines.dsh` 声明最低 DSH 版本（`>=0.1.5-rc.3`）
+- [x] `engines.dsh` 声明最低 DSH 版本（`>=0.1.5-rc.3`）
 - [x] `repository` / `homepage` / `bugs` 指向 GitHub 仓库
 - [x] `LICENSE`（MIT）、`CHANGELOG.md`、英文 + 中文 README
 - [x] `pnpm pack --dry-run` 内容物正确（`src/`、`cordis.patch.yml`、README、

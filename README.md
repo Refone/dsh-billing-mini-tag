@@ -112,6 +112,13 @@ payload names them (`unknownModels`).
 - Network access to `api-docs.deepseek.com` for live quotes. Offline installs
   still work with the embedded quote.
 
+> **Web profile only.** The plugin needs the `webServer` service provided by the
+> shipped `web` bundle. Installing it into a custom profile that only has
+> `dsh-base` leaves the entry waiting for `webServer`, and DSH refuses to boot.
+> Initialize custom profiles from the web template
+> (`dsh --profile <name> --from-default-profile web`) or install into
+> `--profile web`.
+
 ## Development
 
 There is **no build step**: both halves are plain ESM/JS, and the browser half

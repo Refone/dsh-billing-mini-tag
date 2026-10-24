@@ -98,6 +98,12 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 - React 18 由宿主提供（peer dependency）；插件本身没有运行时依赖。
 - 可访问 `api-docs.deepseek.com` 以获取实时报价；离线时仍可用内置报价。
 
+> **只适用于 web profile。** 插件需要随 `web` bundle 提供的 `webServer` 服务。
+> 装进只含 `dsh-base` 的自定义 profile 时，该行会一直等待 `webServer`，DSH 会
+> 拒绝启动。请用 web 模板初始化自定义 profile
+> （`dsh --profile <name> --from-default-profile web`），或直接装进
+> `--profile web`。
+
 ## 开发
 
 **没有构建步骤**：两个半边都是普通 ESM/JS，浏览器半边是手写的模块加载器

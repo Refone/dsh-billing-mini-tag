@@ -5,8 +5,8 @@
 
 English | 中文
 
-在当前会话输入框下方的统计行里、**缓存命中**右侧，常驻显示本会话消费金额
-（`¥x.xx`）。金额按 [DeepSeek 官方 Token 报价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)
+在当前会话输入框下方的统计行最右侧、**上下文用量（context usage）**右边，常驻显示
+本会话消费金额（`¥x.xx`）。金额按 [DeepSeek 官方 Token 报价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)
 计算。
 
 <p align="center">
@@ -47,9 +47,9 @@ dsh plugin --profile web remove dsh-billing-mini-tag
   也不是所有会话的累计。
 - **边用边更新。** 浏览器半边每秒轮询一次宿主路由，步骤完成后数字就会变化，
   不需要刷新页面。
-- **就在缓存命中右侧。** 角标是 `conversation.composer.dock` 里 `order: 2` 的
-  统计项，和官方 `activity`、`usage` 同处一行统计条，排在它们右侧，不会另起
-  一行。
+- **在统计行最右侧。** 角标是 `conversation.composer.dock` 里 `order: 2` 的统计项。
+  该槽位渲染在官方的上下文用量指示之前，因此角标再带一个正的 CSS `order`，保持排在
+  它右边（最初的布局），不会另起一行。
 
 ## 工作原理
 
@@ -58,7 +58,7 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 | 半边 | 入口 | 职责 |
 | --- | --- | --- |
 | 宿主 | `src/index.js`（`.` 导出） | 提供 `GET /plugin-billing-mini-tag/cost?session=<id>`，按 assistant step 折叠会话日志，并刷新官方报价。 |
-| 浏览器 | `src/client.js`（`./client` 导出） | 注册 `billing-mini-tag` 这个 composer dock 统计项，在缓存命中右侧渲染 `¥…` 角标。 |
+| 浏览器 | `src/client.js`（`./client` 导出） | 注册 `billing-mini-tag` 这个 composer dock 统计项，把 `¥…` 角标保持在统计行最右侧、上下文用量右边。 |
 
 宿主半边：
 

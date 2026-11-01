@@ -20,6 +20,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - An amount that is positive but rounds to zero is displayed as `<¥0.01`
   instead of a misleading `¥0.00`.
 
+### Fixed
+
+- The `¥…` pill sits to the right of the context-usage meter again, at the far
+  right of the statistics row. The dock slot renders before that meter, so the
+  pill now carries a positive CSS `order` instead of stopping at the meter's
+  left.
+
 ### Added
 
 - `locale/en.json` and `locale/zh.json` with `meta.title` / `meta.description`

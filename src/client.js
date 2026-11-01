@@ -5,8 +5,14 @@
  * `activity` (order 0) and `usage` (order 1, token total and cache hit) are
  * the shipped entries. A list slot adds an entry with a fresh id as another
  * control in the same row, so this package registers `billing-mini-tag` with
- * `order: 2` and lands immediately right of the cache-hit reading without
- * touching the shipped markup, its classes, or its DOM.
+ * `order: 2`.
+ *
+ * InputBar appends the shipped context-usage meter *after* that slot, so slot
+ * order alone would leave the amount between the usage pill and the meter.
+ * The slot's outlet wrapper is `display: contents`, so this anchor is a direct
+ * flex item of the dock; a positive `order` therefore moves the amount past
+ * the default-order meter and keeps it at the far right of the row — the
+ * original layout.
  *
  * The amount comes from the host half's same-origin route:
  *
@@ -43,8 +49,15 @@ window.__ModuleLoader__.load({
 		 * The statistics strip renders every control as an inline-flex anchor
 		 * plus a pill; these read the same typography tokens the shipped pills
 		 * use, without copying their hashed class names.
+		 *
+		 * `order` places the amount after the shipped context-usage meter:
+		 * that meter is not part of the dock slot but a sibling InputBar
+		 * renders after it, so without this the amount would sit to the
+		 * meter's left. The slot outlet is `display: contents`, which makes
+		 * this anchor a direct flex item of the dock and lets the order apply.
 		 */
 		const anchorStyle = {
+			order: 1,
 			display: "inline-flex",
 			minWidth: 0,
 			fontSize: "calc(var(--dsh-content-font-size-secondary, 13px) - 1px)",

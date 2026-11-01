@@ -17,3 +17,8 @@ commit: `95d474c9359d2e7ec13de40408c8171f2a3fd0a7`
    `usage` 同处一行，排在缓存命中右侧；样式复用同款排版 token 与内边距，并带
    `data-composer-stat` 标记。同时按 0.2 的 stream 记录结构（`record.chunk.usage`）读取 usage，
    补上 locale 文案、图标与 `>=0.2.0` 的版本约束。
+
+4. 修正统计行位置：`conversation.composer.dock` 槽位渲染在 `ContextMeter`（context usage）
+   之前，所以 `order: 2` 只能排到缓存命中右侧、context usage 左侧。给角标加 CSS
+   `order: 1`，利用槽位出口 `display: contents` 让角标成为 dock 的直接 flex item，
+   从而排到 context usage 右边（统计行最右侧），恢复最初的布局。

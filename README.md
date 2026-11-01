@@ -5,9 +5,9 @@
 
 English | [中文](README.zh.md)
 
-Show the **current session's spend** (`¥x.xx`) in the composer statistics row,
-immediately to the right of the cache-hit pill. Amounts are priced from the
-[official DeepSeek token quote](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/).
+Show the **current session's spend** (`¥x.xx`) at the right end of the composer
+statistics row — to the right of the context-usage meter. Amounts are priced
+from the [official DeepSeek token quote](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/).
 
 <p align="center">
   <img src="showcase.png" alt="dsh-billing-mini-tag usage example" style="max-width: 80%; height: auto;">
@@ -49,10 +49,10 @@ install needs neither a build step nor pnpm's build-script authorization.
   cross-session total.
 - **Live while you work.** The browser half polls the host route once a second,
   so the number moves as steps complete without a page reload.
-- **Immediately right of the cache hit.** The tag is a `conversation.composer.dock`
-  entry with `order: 2`, so it renders as another control in the same
-  statistics row, after the shipped `activity` and `usage` readings, instead of
-  starting a second line.
+- **At the right end of the row.** The tag is a `conversation.composer.dock`
+  entry with `order: 2`. That slot renders before the shipped context-usage
+  meter, so the pill also carries a positive CSS `order` to stay to the meter's
+  right — the original layout — without starting a second line.
 
 ## How it works
 
@@ -61,7 +61,7 @@ The package ships two halves:
 | Half | Entry | Responsibility |
 | --- | --- | --- |
 | Host | `src/index.js` (`.` export) | Serves `GET /plugin-billing-mini-tag/cost?session=<id>`, folds the session log per assistant step, and refreshes the official quote. |
-| Browser | `src/client.js` (`./client` export) | Registers the `billing-mini-tag` composer-dock entry that renders the `¥…` pill after the cache-hit reading. |
+| Browser | `src/client.js` (`./client` export) | Registers the `billing-mini-tag` composer-dock entry and keeps the `¥…` pill at the right end of the statistics row, right of the context-usage meter. |
 
 The host half:
 

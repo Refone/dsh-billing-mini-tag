@@ -13,7 +13,7 @@
  * No dependencies: run with `node scripts/check-release.mjs`.
  */
 
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -152,6 +152,33 @@ await check("package files[] ships every required artifact", async () => {
     assert(await exists(entry), `files[] includes missing file ${entry}`);
   }
   return `${files.length} entries`;
+});
+
+await check("locale dictionaries declare plugin metadata", async () => {
+  const locales = ["en", "zh"];
+  for (const id of locales) {
+    const relative = `locale/${id}.json`;
+    assert(await exists(relative), `${relative} does not exist`);
+    const dict = JSON.parse(await readFile(join(root, relative), "utf8"));
+    assert(typeof dict.meta?.title === "string" && dict.meta.title.trim() !== "", `${relative} has no meta.title`);
+    assert(
+      typeof dict.meta?.description === "string" && dict.meta.description.trim() !== "",
+      `${relative} has no meta.description`,
+    );
+  }
+  return locales.join(", ");
+});
+
+await check("inventory icon is a resolvable SVG under 256 KiB", async () => {
+  const iconExport = manifest.exports?.["./icon"];
+  assert(typeof iconExport === "string", "exports['./icon'] is missing");
+  const iconPath = iconExport.replace(/^\.\//, "");
+  assert(await exists(iconPath), `${iconPath} does not exist`);
+  const info = await stat(join(root, iconPath));
+  assert(info.size > 0 && info.size <= 256 * 1024, `${iconPath} is outside the 1 B – 256 KiB range`);
+  const body = await readFile(join(root, iconPath), "utf8");
+  assert(/^<svg[\s>]/.test(body.trimStart()), `${iconPath} does not start with an <svg> element`);
+  return `${iconPath}, ${info.size} bytes`;
 });
 
 console.log("");

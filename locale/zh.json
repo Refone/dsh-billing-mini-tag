@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "title": "会话花费角标",
+    "description": "在输入框下方的统计行里、缓存命中右侧显示当前会话的消费金额（¥），按 DeepSeek 官方 Token 报价计算。"
+  },
+  "cost.title": "当前会话消费 {amount} · {source}",
+  "cost.source.official": "官方报价",
+  "cost.source.builtin": "内置报价",
+  "cost.unknown": "未知模型按 Flash 价估算"
+}

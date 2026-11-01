@@ -49,9 +49,10 @@ install needs neither a build step nor pnpm's build-script authorization.
   cross-session total.
 - **Live while you work.** The browser half polls the host route once a second,
   so the number moves as steps complete without a page reload.
-- **Immediately right of the cache-hit pill.** The tag portals itself into the
-  official statistics row instead of adding a second dock line, and it stays
-  last even while the official pills mount and unmount.
+- **Immediately right of the cache hit.** The tag is a `conversation.composer.dock`
+  entry with `order: 2`, so it renders as another control in the same
+  statistics row, after the shipped `activity` and `usage` readings, instead of
+  starting a second line.
 
 ## How it works
 
@@ -60,7 +61,7 @@ The package ships two halves:
 | Half | Entry | Responsibility |
 | --- | --- | --- |
 | Host | `src/index.js` (`.` export) | Serves `GET /plugin-billing-mini-tag/cost?session=<id>`, folds the session log per assistant step, and refreshes the official quote. |
-| Browser | `src/client.js` (`./client` export) | Registers a dock entry and portals the `¥…` tag into `[data-composer-stats]`. |
+| Browser | `src/client.js` (`./client` export) | Registers the `billing-mini-tag` composer-dock entry that renders the `¥…` pill after the cache-hit reading. |
 
 The host half:
 
@@ -104,20 +105,20 @@ payload names them (`unknownModels`).
 
 ## Requirements
 
-- A DSH **web** profile. The package declares `engines.dsh` as
-  `>=0.1.5-rc.3`, the version it is developed and tested against.
+- DSH **0.2.x** — the package declares `engines.dsh` as `>=0.2.0`, the range
+  with the composer-dock list slot this control registers into.
 - Node.js **20 or newer**.
 - React 18 is provided by the host (declared as a peer dependency); the plugin
   has no runtime dependencies of its own.
 - Network access to `api-docs.deepseek.com` for live quotes. Offline installs
   still work with the embedded quote.
 
-> **Web profile only.** The plugin needs the `webServer` service provided by the
-> shipped `web` bundle. Installing it into a custom profile that only has
-> `dsh-base` leaves the entry waiting for `webServer`, and DSH refuses to boot.
-> Initialize custom profiles from the web template
-> (`dsh --profile <name> --from-default-profile web`) or install into
-> `--profile web`.
+> **Needs the `webServer` service.** The plugin serves its cost route through
+> the shipped `web` bundle, so any profile that mounts it works — the `web`
+> profile and the Desktop app's `desktop` profile both do. Installing it into a
+> custom profile that only has `dsh-base` leaves the entry waiting for
+> `webServer`, and DSH refuses to boot. Initialize custom profiles from the web
+> template (`dsh --profile <name> --from-default-profile web`).
 
 ## Development
 
@@ -139,7 +140,9 @@ command in the README, an exported `apply(ctx)` module, and a resolvable
 ```text
 .
 ├── src/index.js          # host half (apply, quote, session fold, HTTP route)
-├── src/client.js         # browser half (dock entry + ¥ tag)
+├── src/client.js         # browser half (composer-dock control + ¥ pill)
+├── locale/{en,zh}.json   # plugin title/description + tooltip copy
+├── icon.svg              # inventory artwork
 ├── cordis.patch.yml      # bundle patch: inserts the plugin into a profile
 ├── scripts/check-release.mjs
 ├── docs/development-trace.md

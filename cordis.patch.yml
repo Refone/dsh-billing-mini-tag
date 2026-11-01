@@ -7,9 +7,8 @@
 # The host half (package.json export ".") serves
 # GET /plugin-billing-mini-tag/cost, folds the session's token usage, and
 # refreshes the official quote on Send. The browser half (export "./client",
-# served by dsh-client-modules) registers the dock entry that portals the small
-# `¥…` billing tag into the composer statistics row, right after the cache-hit
-# pill.
+# served by dsh-client-modules) registers the `billing-mini-tag` composer-dock
+# control that renders the small `¥…` tag right after the cache-hit reading.
 - insert:
     - id: dsh-billing-mini-tag
       name: dsh-billing-mini-tag

@@ -1,18 +1,22 @@
 {
   "name": "dsh-billing-mini-tag",
-  "version": "0.1.0",
-  "description": "DSH plugin: show the current session's spend (¥0.00) immediately to the right of the composer cache-hit statistics pill, priced from the official token quote",
+  "version": "0.2.0",
+  "description": "DSH plugin: show the current session's spend (¥x.xx) as a composer statistics control, immediately right of the cache-hit reading, priced from the official token quote",
   "type": "module",
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
     "./client": "./src/client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
     "./package.json": "./package.json"
   },
   "files": [
     "src/index.js",
     "src/client.js",
     "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
     "README.md",
     "README.zh.md",
     "CHANGELOG.md",
@@ -26,22 +30,22 @@
     "client": {
       "inject": [
         "@deepseek-ai/dsh-client-ui-slots",
-        "@deepseek-ai/dsh-client-ui-conversation"
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-locale"
       ],
       "platform": "web"
     }
   },
   "engines": {
     "node": ">=20",
-    "dsh": ">=0.1.5-rc.3"
+    "dsh": ">=0.2.0"
   },
   "scripts": {
     "check": "node scripts/check-release.mjs",
     "pack:check": "pnpm pack --dry-run"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.2.0"
   },
   "keywords": [
     "dsh-plugin",

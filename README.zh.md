@@ -47,8 +47,9 @@ dsh plugin --profile web remove dsh-billing-mini-tag
   也不是所有会话的累计。
 - **边用边更新。** 浏览器半边每秒轮询一次宿主路由，步骤完成后数字就会变化，
   不需要刷新页面。
-- **就在缓存命中右侧。** 角标被 portal 进官方统计行，而不是另起一行；官方
-  统计项挂载/卸载时，角标仍保持在该行最后。
+- **就在缓存命中右侧。** 角标是 `conversation.composer.dock` 里 `order: 2` 的
+  统计项，和官方 `activity`、`usage` 同处一行统计条，排在它们右侧，不会另起
+  一行。
 
 ## 工作原理
 
@@ -57,7 +58,7 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 | 半边 | 入口 | 职责 |
 | --- | --- | --- |
 | 宿主 | `src/index.js`（`.` 导出） | 提供 `GET /plugin-billing-mini-tag/cost?session=<id>`，按 assistant step 折叠会话日志，并刷新官方报价。 |
-| 浏览器 | `src/client.js`（`./client` 导出） | 注册 dock 项，把 `¥…` 角标 portal 到 `[data-composer-stats]` 统计行。 |
+| 浏览器 | `src/client.js`（`./client` 导出） | 注册 `billing-mini-tag` 这个 composer dock 统计项，在缓存命中右侧渲染 `¥…` 角标。 |
 
 宿主半边：
 
@@ -92,17 +93,17 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 
 ## 环境要求
 
-- DSH **web** profile。包内声明 `engines.dsh` 为 `>=0.1.5-rc.3`（开发与
-  测试所用版本）。
+- DSH **0.2.x**：包内声明 `engines.dsh` 为 `>=0.2.0`，该版本区间才有本插件
+  使用的 composer dock 列表槽位。
 - Node.js **20 及以上**。
 - React 18 由宿主提供（peer dependency）；插件本身没有运行时依赖。
 - 可访问 `api-docs.deepseek.com` 以获取实时报价；离线时仍可用内置报价。
 
-> **只适用于 web profile。** 插件需要随 `web` bundle 提供的 `webServer` 服务。
-> 装进只含 `dsh-base` 的自定义 profile 时，该行会一直等待 `webServer`，DSH 会
-> 拒绝启动。请用 web 模板初始化自定义 profile
-> （`dsh --profile <name> --from-default-profile web`），或直接装进
-> `--profile web`。
+> **需要 `webServer` 服务。** 插件通过随 `web` bundle 提供的 `webServer` 暴露
+> 计费路由，因此只要 profile 挂载了 web bundle 即可：`web` profile 和桌面应用
+> 的 `desktop` profile 都满足。装进只含 `dsh-base` 的自定义 profile 时，该行会
+> 一直等待 `webServer`，DSH 会拒绝启动。请用 web 模板初始化自定义 profile
+> （`dsh --profile <name> --from-default-profile web`）。
 
 ## 开发
 
@@ -122,7 +123,9 @@ README 中可复制的 `dsh plugin --profile web add …` 命令、导出的 `ap
 ```text
 .
 ├── src/index.js          # 宿主半边（apply、报价、会话折叠、HTTP 路由）
-├── src/client.js         # 浏览器半边（dock 项 + ¥ 角标）
+├── src/client.js         # 浏览器半边（composer dock 统计项 + ¥ 角标）
+├── locale/{en,zh}.json   # 插件标题/描述 + 角标 tooltip 文案
+├── icon.svg              # 插件列表图标
 ├── cordis.patch.yml      # bundle patch：把插件插入 profile
 ├── scripts/check-release.mjs
 ├── docs/development-trace.md

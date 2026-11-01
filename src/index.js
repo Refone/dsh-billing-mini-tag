@@ -228,7 +228,17 @@ function usageTokens(usage) {
   return tokens[0] + tokens[1] + tokens[2] + tokens[3] > 0 ? tokens : null;
 }
 
-/** Last provider-reported usage chunk embedded in an assistant stream. */
+/**
+ * Last provider-reported usage sample embedded in an assistant stream.
+ *
+ * A durable settlement stores compact records, where a raw chunk sits at
+ * `record.chunk`: `{ type: 'chunk', time, chunk: { type: 'usage', usage } }`.
+ * The bare `{ type: 'usage', usage }` form is accepted as well, so a log
+ * written by an older DSH version still prices correctly.
+ *
+ * @param {unknown} stream - `data.stream` of an assistant settlement.
+ * @returns {object|undefined} the newest usage sample, if any.
+ */
 function lastUsageFromStream(stream) {
   const list = Array.isArray(stream)
     ? stream
@@ -237,9 +247,12 @@ function lastUsageFromStream(stream) {
       : null;
   if (list === null) return undefined;
   for (let index = list.length - 1; index >= 0; index -= 1) {
-    const chunk = list[index];
-    if (chunk !== null && typeof chunk === "object" && chunk.type === "usage" && chunk.usage) {
-      return chunk.usage;
+    const record = list[index];
+    if (record === null || typeof record !== "object") continue;
+    if (record.type === "usage" && record.usage) return record.usage;
+    if (record.type === "chunk" && record.chunk !== null && typeof record.chunk === "object"
+      && record.chunk.type === "usage" && record.chunk.usage) {
+      return record.chunk.usage;
     }
   }
   return undefined;

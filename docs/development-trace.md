@@ -11,3 +11,9 @@ commit: `95d474c9359d2e7ec13de40408c8171f2a3fd0a7`
    - 宿主半边按会话日志逐 step 折叠 usage 与模型，浏览器半边轮询 `/plugin-billing-mini-tag/cost` 并渲染 `¥x.xx`。
 
 ![消费金额标签](images/real-billing-tag.png)
+
+3. 适配 DSH 0.2：官方统计行不再有 `[data-composer-stats]` 容器，原来的 portal 无处可挂。改为注册
+   `conversation.composer.dock` 里的 `billing-mini-tag` 统计项（`order: 2`），与官方 `activity`、
+   `usage` 同处一行，排在缓存命中右侧；样式复用同款排版 token 与内边距，并带
+   `data-composer-stat` 标记。同时按 0.2 的 stream 记录结构（`record.chunk.usage`）读取 usage，
+   补上 locale 文案、图标与 `>=0.2.0` 的版本约束。

@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "title": "Session Spend Tag",
+    "description": "Shows the current session's spend (¥x.xx) in the composer statistics row, immediately right of the cache-hit reading, priced from the official DeepSeek token quote."
+  },
+  "cost.title": "Current session spend {amount} · {source}",
+  "cost.source.official": "official quote",
+  "cost.source.builtin": "built-in quote",
+  "cost.unknown": "unknown models priced as Flash"
+}

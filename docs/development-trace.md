@@ -25,3 +25,14 @@ commit: `95d474c9359d2e7ec13de40408c8171f2a3fd0a7`
 
 5. 插件列表图标改为白底、`¥` 镂空：符号轮廓取自 Arial Black，作为
    `fill-rule="evenodd"` 的第二个子路径从白色圆角方块中挖掉，不再用蓝色底与白色描边。
+
+6. 标题交还给包名：`locale/*.json` 去掉 `meta.title`，DSH 回退到 `package.json` 的
+   包名（`dsh-billing-mini-tag`）；它与组件行的 `id`/`moduleName` 相同，所以详情页
+   不再在标题下重复两行技术名。（中途加过一版 640×300 的详情页配图，按作者要求已移除：
+   DSH 只给自带 bundle 渲染功能配图，第三方包只能在 `plugins.detail.section` 里自绘。）
+
+7. 修正 locale 注入：浏览器半边原来用 `ctx.get("locale")` 取服务，而 fiber 只等
+   `slots`。locale 插件挂载更晚，取到的是 `undefined`，词典从未注册，角标 tooltip
+   一直是原始 key（`cost.title`）。改为声明 `inject: ["slots", "locale"]`、用
+   `ctx.locale` 注册词典并 `bind` 出翻译座位；`scripts/test-client.mjs` 用一个
+   `ctx.get()` 返回空的假上下文复现这一退化。

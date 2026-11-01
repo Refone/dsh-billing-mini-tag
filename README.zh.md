@@ -60,6 +60,10 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 | 宿主 | `src/index.js`（`.` 导出） | 提供 `GET /plugin-billing-mini-tag/cost?session=<id>`，按 assistant step 折叠会话日志，并刷新官方报价。 |
 | 浏览器 | `src/client.js`（`./client` 导出） | 注册 `billing-mini-tag` 这个 composer dock 统计项，把 `¥…` 角标保持在统计行最右侧、上下文用量右边。 |
 
+插件不声明 `meta.title`：DSH 会回退到包名 `dsh-billing-mini-tag`，而它同时也是组件行的
+id 与模块名，因此组件行不再在标题下重复两行技术名。`locale/*.json`
+保留描述（DSH 不会从包里推导它），以及角标 tooltip 的文案。
+
 宿主半边：
 
 1. 启动时抓取一次官方中文报价页，之后每次发送消息再抓一次，并缓存最近一次
@@ -98,6 +102,8 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 - Node.js **20 及以上**。
 - React 18 由宿主提供（peer dependency）；插件本身没有运行时依赖。
 - 可访问 `api-docs.deepseek.com` 以获取实时报价；离线时仍可用内置报价。
+- 浏览器半边注入 DSH 客户端的 `locale` 服务（web 与 desktop 应用自带），用于角标
+  tooltip；fiber 会等待该服务，因此 tooltip 不会退化成原始 key。
 
 > **需要 `webServer` 服务。** 插件通过随 `web` bundle 提供的 `webServer` 暴露
 > 计费路由，因此只要 profile 挂载了 web bundle 即可：`web` profile 和桌面应用
@@ -112,22 +118,29 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 README、CHANGELOG、LICENSE 和截图。
 
 ```sh
-node scripts/check-release.mjs   # 发布要求检查 + 模块冒烟测试
+node scripts/check-release.mjs   # 发布要求检查
+node scripts/test-client.mjs     # 浏览器半边冒烟测试（也可 pnpm test）
 pnpm pack --dry-run              # 查看最终 tarball 内容
 ```
 
-`scripts/check-release.mjs` 检查 DSH 生态扫描的四项内容：`dsh-plugin` 关键字、
-README 中可复制的 `dsh plugin --profile web add …` 命令、导出的 `apply(ctx)`
-模块，以及可解析的 `dsh.bundle.patch` bundle 声明。
+`scripts/check-release.mjs` 检查 DSH 生态扫描的内容：`dsh-plugin` 关键字、README
+中可复制的 `dsh plugin --profile web add …` 命令、导出的 `apply(ctx)` 模块、
+可解析的 `dsh.bundle.patch` bundle 声明，以及包元信息、图标和 locale 键。
+
+`scripts/test-client.mjs` 用桩替换 `window.__ModuleLoader__`、React、Cordis slots
+服务和 locale 运行时，渲染页面真正会拿到的东西：`¥x.xx` 角标，以及中英两种语言的
+tooltip。假上下文的 `ctx.get()` 恒为空，所以一旦有人改回可选查询，测试会失败，而不是
+把原始 key 发到用户眼前。
 
 ```text
 .
 ├── src/index.js          # 宿主半边（apply、报价、会话折叠、HTTP 路由）
 ├── src/client.js         # 浏览器半边（composer dock 统计项 + ¥ 角标）
-├── locale/{en,zh}.json   # 插件标题/描述 + 角标 tooltip 文案
+├── locale/{en,zh}.json   # 插件描述 + 角标 tooltip 文案
 ├── icon.svg              # 插件列表图标
 ├── cordis.patch.yml      # bundle patch：把插件插入 profile
 ├── scripts/check-release.mjs
+├── scripts/test-client.mjs
 ├── docs/development-trace.md
 └── showcase.png
 ```

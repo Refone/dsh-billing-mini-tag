@@ -156,17 +156,34 @@ await check("package files[] ships every required artifact", async () => {
 
 await check("locale dictionaries declare plugin metadata", async () => {
   const locales = ["en", "zh"];
+  const dictionaries = new Map();
   for (const id of locales) {
     const relative = `locale/${id}.json`;
     assert(await exists(relative), `${relative} does not exist`);
     const dict = JSON.parse(await readFile(join(root, relative), "utf8"));
-    assert(typeof dict.meta?.title === "string" && dict.meta.title.trim() !== "", `${relative} has no meta.title`);
+    // meta.title is optional: omitted, DSH falls back to the package name, which
+    // is what keeps the detail page from printing the technical name twice.
+    if (dict.meta?.title !== undefined) {
+      assert(typeof dict.meta.title === "string" && dict.meta.title.trim() !== "", `${relative}: meta.title must be a non-empty string`);
+    }
     assert(
       typeof dict.meta?.description === "string" && dict.meta.description.trim() !== "",
       `${relative} has no meta.description`,
     );
+    dictionaries.set(id, Object.keys(dict).sort());
   }
-  return locales.join(", ");
+  const [first, ...rest] = [...dictionaries];
+  for (const [id, keys] of rest) {
+    assert(
+      keys.join("\n") === first[1].join("\n"),
+      `locale/${id}.json and locale/${first[0]}.json declare different keys`,
+    );
+  }
+  const keys = new Set(first[1]);
+  for (const key of ["cost.title", "cost.source.official", "cost.unknown"]) {
+    assert(keys.has(key), `locale/${first[0]}.json has no ${key}`);
+  }
+  return `${locales.join(", ")} (${keys.size} keys)`;
 });
 
 await check("inventory icon is a resolvable SVG under 256 KiB", async () => {

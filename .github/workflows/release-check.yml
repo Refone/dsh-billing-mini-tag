@@ -23,5 +23,8 @@ jobs:
       - name: Validate publishing requirements
         run: node scripts/check-release.mjs
 
+      - name: Test the browser half
+        run: node scripts/test-client.mjs
+
       - name: Inspect package contents
         run: npm pack --dry-run

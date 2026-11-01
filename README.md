@@ -63,6 +63,12 @@ The package ships two halves:
 | Host | `src/index.js` (`.` export) | Serves `GET /plugin-billing-mini-tag/cost?session=<id>`, folds the session log per assistant step, and refreshes the official quote. |
 | Browser | `src/client.js` (`./client` export) | Registers the `billing-mini-tag` composer-dock entry and keeps the `¥…` pill at the right end of the statistics row, right of the context-usage meter. |
 
+The plugin declares no `meta.title`. DSH falls back to the package name
+(`dsh-billing-mini-tag`), which is also the component row's id and module name,
+so the component row no longer prints the name twice more under its own title.
+`locale/*.json` keeps the description — which DSH does not derive from the
+package — plus the pill tooltip copy.
+
 The host half:
 
 1. Fetches the official Chinese pricing page at startup and again on every
@@ -112,6 +118,9 @@ payload names them (`unknownModels`).
   has no runtime dependencies of its own.
 - Network access to `api-docs.deepseek.com` for live quotes. Offline installs
   still work with the embedded quote.
+- The browser half injects DSH's client `locale` service (shipped with the web
+  and desktop apps) for its pill tooltip. The fiber waits for it, so the
+  tooltip never renders as a raw key.
 
 > **Needs the `webServer` service.** The plugin serves its cost route through
 > the shipped `web` bundle, so any profile that mounts it works — the `web`
@@ -128,23 +137,31 @@ ships `src/`, `cordis.patch.yml`, the READMEs, the changelog, the license, and
 the screenshot.
 
 ```sh
-node scripts/check-release.mjs   # publishing requirements + module smoke test
+node scripts/check-release.mjs   # publishing requirements
+node scripts/test-client.mjs     # browser-half smoke test (also `pnpm test`)
 pnpm pack --dry-run              # inspect the exact tarball contents
 ```
 
-`scripts/check-release.mjs` verifies the four things the DSH ecosystem scans
-for: the `dsh-plugin` keyword, a copyable `dsh plugin --profile web add …`
-command in the README, an exported `apply(ctx)` module, and a resolvable
-`dsh.bundle.patch` bundle declaration.
+`scripts/check-release.mjs` verifies what the DSH ecosystem scans for — the
+`dsh-plugin` keyword, a copyable `dsh plugin --profile web add …` command in
+the README, an exported `apply(ctx)` module, a resolvable `dsh.bundle.patch`
+bundle declaration — plus the package metadata, icon and locale keys.
+
+`scripts/test-client.mjs` stubs `window.__ModuleLoader__`, React, the Cordis
+slots service and the locale runtime, then renders what the GUI would get: the
+`¥x.xx` pill and its tooltip in both shipped languages. The fake `ctx.get()`
+answers nothing, so a regression back to an optional locale lookup fails the
+test instead of shipping raw keys.
 
 ```text
 .
 ├── src/index.js          # host half (apply, quote, session fold, HTTP route)
 ├── src/client.js         # browser half (composer-dock control + ¥ pill)
-├── locale/{en,zh}.json   # plugin title/description + tooltip copy
+├── locale/{en,zh}.json   # plugin description + pill tooltip copy
 ├── icon.svg              # inventory artwork
 ├── cordis.patch.yml      # bundle patch: inserts the plugin into a profile
 ├── scripts/check-release.mjs
+├── scripts/test-client.mjs
 ├── docs/development-trace.md
 └── showcase.png
 ```

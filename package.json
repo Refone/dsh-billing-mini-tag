@@ -1,6 +1,6 @@
 {
   "name": "dsh-billing-mini-tag",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "DSH plugin: show the current session's spend (¥x.xx) at the right end of the composer statistics row, right of the context-usage meter, priced from the official token quote",
   "type": "module",
   "main": "src/index.js",
@@ -42,6 +42,7 @@
   },
   "scripts": {
     "check": "node scripts/check-release.mjs",
+    "test": "node scripts/test-client.mjs",
     "pack:check": "pnpm pack --dry-run"
   },
   "peerDependencies": {

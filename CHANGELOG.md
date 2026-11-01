@@ -4,6 +4,32 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-11-01
+
+### Changed
+
+- `locale/en.json` and `locale/zh.json` no longer declare `meta.title`. DSH
+  falls back to the package name (`dsh-billing-mini-tag`), which is also the
+  component row's id and module name, so the detail page no longer repeats the
+  technical name twice under the title.
+- `scripts/check-release.mjs` accepts a missing `meta.title` and requires both
+  locale files to declare the same keys.
+
+### Fixed
+
+- The browser half read the locale service with `ctx.get("locale")` while the
+  fiber activated on `slots` alone. The locale provider mounts later, so the
+  lookup answered `undefined`, the dictionaries were never registered, and the
+  pill tooltip printed its raw key (`cost.title`) instead of a sentence.
+  `locale` is now a declared dependency (`inject: ["slots", "locale"]`) and the
+  dictionaries register through `ctx.locale`.
+
+### Added
+
+- `scripts/test-client.mjs` (`pnpm test`) renders the pill against a stubbed
+  loader, React, slots service and locale runtime, and fails when the locale
+  lookup regresses to the optional `ctx.get()`.
+
 ## [0.2.0] - 2026-11-01
 
 ### Changed

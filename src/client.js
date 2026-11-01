@@ -249,18 +249,17 @@ window.__ModuleLoader__.load({
 
 		/** @param ctx - the browser-side cordis context for this plugin fiber. */
 		function apply(ctx) {
-			const locale = ctx.get("locale");
-			let translate = passthrough;
-
-			if (locale !== undefined && locale !== null) {
-				for (const [id, dictionary] of Object.entries(DICTIONARIES)) {
-					ctx.effect(
-						() => locale.register(NAMESPACE, id, dictionary),
-						`billing-mini-tag: ${id} dictionary`,
-					);
-				}
-				translate = locale.bind(NAMESPACE);
-			}
+			/*
+			 * `locale` must be injected, not looked up with `ctx.get("locale")`:
+			 * the fiber activates as soon as `slots` is ready, which happens
+			 * before the locale plugin provides its service. A lookup there
+			 * returns undefined for the rest of the page's life, the
+			 * dictionaries are never registered, and every seat bound to this
+			 * namespace falls back to printing raw keys.
+			 */
+			const locale = ctx.locale;
+			ctx.effect(() => locale.register(NAMESPACE, DICTIONARIES), "billing-mini-tag: dictionaries");
+			const translate = locale.bind(NAMESPACE);
 
 			ctx.slots.inject("conversation.composer.dock", () =>
 				ctx.slots.register(
@@ -275,7 +274,7 @@ window.__ModuleLoader__.load({
 		}
 
 		exports.apply = apply;
-		exports.inject = ["slots"];
+		exports.inject = ["slots", "locale"];
 		exports.BillingPill = BillingPill;
 		exports.formatAmount = formatAmount;
 		return module.exports;

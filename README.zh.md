@@ -3,7 +3,7 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![DSH plugin](https://img.shields.io/badge/DSH-plugin-4f46e5)](https://github.com/topics/dsh-plugin)
 
-English | 中文
+[English](README.md) | 中文
 
 在当前会话输入框下方的统计行最右侧、**上下文用量（context usage）**右边，常驻显示
 本会话消费金额（`¥x.xx`）。金额按 [DeepSeek 官方 Token 报价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)
@@ -17,29 +17,42 @@ English | 中文
 
 ## 安装
 
+两种方式，按你运行 DSH 的方式来选。
+
+### 1. 在 shell 里安装
+
 ```sh
+dsh plugin --profile web add dsh-billing-mini-tag
+```
+
+重启 `dsh web` 并刷新页面，然后发送一条消息。想固定版本，或直接跟随仓库而不是 npm 包：
+
+```sh
+dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.0.tar.gz
 dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 ```
 
-重启 `dsh web` 并刷新 Web 界面，然后发送一条消息即可。想固定版本而不是跟随
-`main`：
-
-```sh
-dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.1.0.tar.gz
-```
-
-再次执行同一条 `add` 命令即可更新。卸载：
+再次执行同一条 `add` 命令即可更新；卸载：
 
 ```sh
 dsh plugin --profile web remove dsh-billing-mini-tag
 ```
 
-包内是纯 JavaScript、没有 `prepare` 脚本，因此从 GitHub 安装既不需要构建，
-也不需要 pnpm 的构建脚本授权。
+包内是纯 JavaScript、没有 `prepare` 脚本，因此从 GitHub 安装既不需要构建，也不需要
+pnpm 的构建脚本授权。
 
-> 从 GitHub 安装要求宿主能访问该仓库。网络无法访问 GitHub 时，可以从
-> [Releases](https://github.com/Refone/dsh-billing-mini-tag/releases) 下载
-> tarball 后按上面的方式安装。
+### 2. 在 DeepSeek Harness Desktop 里安装
+
+1. 侧栏打开 **插件**。
+2. 点 **添加插件** → **安装第三方插件**。
+3. 在 **包名或地址** 里填入 `dsh-billing-mini-tag`（或
+   `github:Refone/dsh-billing-mini-tag`），点 **安装**。
+4. 提示时点 **立即启用**；如果 DSH 提示需要重启，就重启应用——宿主半边要挂载计费路由，
+   第一次安装需要重启。
+5. 发送一条消息：`¥` 金额出现在输入框统计行最右侧、上下文用量右边。
+
+如果访问不到 npm 或 GitHub，在同一个对话框里展开 **安装源** 换成镜像，或直接粘贴
+[Releases](https://github.com/Refone/dsh-billing-mini-tag/releases) 里的 tarball 地址。
 
 ## 显示什么
 

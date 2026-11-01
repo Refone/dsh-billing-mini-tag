@@ -17,18 +17,23 @@ from the [official DeepSeek token quote](https://api-docs.deepseek.com/zh-cn/qui
 
 ## Install
 
+Two routes; use whichever matches how you run DSH.
+
+### 1. Install on the shell
+
 ```sh
+dsh plugin --profile web add dsh-billing-mini-tag
+```
+
+Restart `dsh web`, refresh the page, then send a message. To pin a release, or
+to track the repository instead of the npm package:
+
+```sh
+dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.0.tar.gz
 dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 ```
 
-Restart `dsh web` and refresh the Web GUI, then send a message. To pin a
-release instead of tracking `main`:
-
-```sh
-dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.1.0.tar.gz
-```
-
-Update by running the same `add` command again. Remove with:
+Run the same `add` command again to update; remove with:
 
 ```sh
 dsh plugin --profile web remove dsh-billing-mini-tag
@@ -37,10 +42,20 @@ dsh plugin --profile web remove dsh-billing-mini-tag
 The package ships plain JavaScript with no `prepare` script, so a GitHub
 install needs neither a build step nor pnpm's build-script authorization.
 
-> Installing from GitHub requires the host to read the repository. If your
-> network cannot reach GitHub, install the npm-style tarball from the
-> [releases page](https://github.com/Refone/dsh-billing-mini-tag/releases) once
-> one is published.
+### 2. Install on DeepSeek Harness Desktop
+
+1. Open **Plugins** in the sidebar.
+2. Choose **Add plugin** → **Install a third-party plugin**.
+3. Paste `dsh-billing-mini-tag` — or `github:Refone/dsh-billing-mini-tag` — into
+   **Package name or address**, then press **Install**.
+4. Press **Enable now** when DSH offers it, and restart the app if it asks for a
+   restart: the host half mounts the cost route, so the first load needs one.
+5. Send a message — `¥` appears at the far right of the composer statistics row,
+   to the right of the context-usage meter.
+
+If npm or GitHub is unreachable, expand **Install source** in the same dialog
+and pick a mirror, or paste the tarball URL from the
+[releases page](https://github.com/Refone/dsh-billing-mini-tag/releases).
 
 ## What it shows
 

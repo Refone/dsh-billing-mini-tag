@@ -21,19 +21,43 @@ Two routes; use whichever matches how you run DSH.
 
 ### 1. Install on the shell
 
+Choose **one** of the four installation methods below. They are alternatives,
+not steps to run in sequence — do not run all four. All four finish with the
+same `dsh plugin --profile web add` command; only the package source differs.
+
+**Method A — npm package (recommended; follows the latest release):**
+
 ```sh
 dsh plugin --profile web add dsh-billing-mini-tag
 ```
 
-Restart `dsh web`, refresh the page, then send a message. To pin a release, or
-to track the repository instead of the npm package:
+**Method B — pinned release tarball (reproducible version):**
 
 ```sh
 dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.1.tar.gz
+```
+
+**Method C — repository main branch (latest development code):**
+
+```sh
 dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 ```
 
-Run the same `add` command again to update; remove with:
+**Method D — local clone (for development):**
+
+```sh
+git clone https://github.com/Refone/dsh-billing-mini-tag.git
+cd dsh-billing-mini-tag
+dsh plugin --profile web add "$PWD"
+```
+
+`dsh plugin add` forwards to pnpm inside the profile directory, so pass an
+absolute path — `"$PWD"` after `cd` does that. A relative `.` would resolve to
+the profile directory, not this clone. Update the clone later with `git pull`.
+
+After choosing one and installing, restart `dsh web`, refresh the page, then
+send a message. Run the same `add` command again, with the same source, to
+update; remove with:
 
 ```sh
 dsh plugin --profile web remove dsh-billing-mini-tag

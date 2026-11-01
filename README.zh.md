@@ -17,22 +17,45 @@
 
 ## 安装
 
-两种方式，按你运行 DSH 的方式来选。
+两种安装途径，按你的 DSH 运行环境来选。
 
 ### 1. 在 shell 里安装
+
+下面四种是**并列的命令行安装方式**：任选其一即可，不要四条都执行。
+四种方式最后都使用同一条 `dsh plugin --profile web add` 命令，区别只在安装源。
+
+**方式 A — npm 包（推荐，跟随最新发布版）：**
 
 ```sh
 dsh plugin --profile web add dsh-billing-mini-tag
 ```
 
-重启 `dsh web` 并刷新页面，然后发送一条消息。想固定版本，或直接跟随仓库而不是 npm 包：
+**方式 B — 固定版本的 Release 源码包（版本可复现）：**
 
 ```sh
 dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.1.tar.gz
+```
+
+**方式 C — 仓库 main 分支（跟随最新开发代码）：**
+
+```sh
 dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 ```
 
-再次执行同一条 `add` 命令即可更新；卸载：
+**方式 D — 克隆到本地（用于开发调试）：**
+
+```sh
+git clone https://github.com/Refone/dsh-billing-mini-tag.git
+cd dsh-billing-mini-tag
+dsh plugin --profile web add "$PWD"
+```
+
+`dsh plugin add` 是在 profile 目录里转发给 pnpm 的，所以要传绝对路径；
+`cd` 之后的 `"$PWD"` 正好是绝对路径。不要写成 `add .`，那会指向 profile 目录，
+而不是这个克隆目录。以后在克隆目录里 `git pull` 即可更新代码。
+
+安装完成后重启 `dsh web` 并刷新页面，然后发送一条消息。
+再次执行同一条 `add` 命令（保持同一个安装源）即可更新；卸载：
 
 ```sh
 dsh plugin --profile web remove dsh-billing-mini-tag

@@ -19,6 +19,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   no longer skipped.
 - An amount that is positive but rounds to zero is displayed as `<¥0.01`
   instead of a misleading `¥0.00`.
+- The plugin-inventory icon is now a white tile with the `¥` mark knocked out
+  (an Arial Black glyph outline) instead of a blue tile with a white stroke.
 
 ### Fixed
 

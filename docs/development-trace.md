@@ -22,3 +22,6 @@ commit: `95d474c9359d2e7ec13de40408c8171f2a3fd0a7`
    之前，所以 `order: 2` 只能排到缓存命中右侧、context usage 左侧。给角标加 CSS
    `order: 1`，利用槽位出口 `display: contents` 让角标成为 dock 的直接 flex item，
    从而排到 context usage 右边（统计行最右侧），恢复最初的布局。
+
+5. 插件列表图标改为白底、`¥` 镂空：符号轮廓取自 Arial Black，作为
+   `fill-rule="evenodd"` 的第二个子路径从白色圆角方块中挖掉，不再用蓝色底与白色描边。

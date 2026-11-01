@@ -1,0 +1,44 @@
+
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+# 授予 GitHub Actions 最小必要权限
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 获取 GitHub 仓库代码
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # 2. 配置 Node.js 和 npm Registry
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. 运行测试
+      - name: Run tests
+        run: npm test
+
+      # 5. 构建项目（如果 package.json 有 build 脚本）
+      - name: Build
+        run: npm run build --if-present
+
+      # 6. 发布到 npm
+      - name: Publish
+        run: npm publish

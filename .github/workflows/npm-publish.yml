@@ -1,11 +1,10 @@
-
 name: Publish to npm
 
 on:
   release:
     types: [published]
 
-# 授予 GitHub Actions 最小必要权限
+# 最小权限：checkout 只读，OIDC 令牌用于 npm Trusted Publishing
 permissions:
   contents: read
   id-token: write
@@ -15,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 获取 GitHub 仓库代码
+      # 1. 获取 GitHub 仓库代码（release 事件默认 checkout 对应 tag）
       - name: Checkout
         uses: actions/checkout@v6
 
@@ -27,18 +26,15 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      # 3. 安装依赖
-      - name: Install dependencies
-        run: npm ci
+      # 3. 发布前检查
+      #    这个包没有运行依赖，也没有 lockfile，所以不能用 npm ci。
+      - name: Validate publishing requirements
+        run: node scripts/check-release.mjs
 
       # 4. 运行测试
       - name: Run tests
         run: npm test
 
-      # 5. 构建项目（如果 package.json 有 build 脚本）
-      - name: Build
-        run: npm run build --if-present
-
-      # 6. 发布到 npm
+      # 5. 发布到 npm（认证走 Trusted Publishing / OIDC，无需 NPM_TOKEN）
       - name: Publish
         run: npm publish

@@ -28,7 +28,7 @@ dsh plugin --profile web add dsh-billing-mini-tag
 重启 `dsh web` 并刷新页面，然后发送一条消息。想固定版本，或直接跟随仓库而不是 npm 包：
 
 ```sh
-dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.0.tar.gz
+dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.1.tar.gz
 dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 ```
 

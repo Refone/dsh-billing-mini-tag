@@ -4,6 +4,21 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-11-01
+
+### Fixed
+
+- The npm publish workflow could never reach `npm publish`: it ran `npm ci`,
+  which fails with `EUSAGE` because the repository has no `package-lock.json`
+  (the package has no runtime dependencies). The step is gone, and the job now
+  runs `node scripts/check-release.mjs` before testing and publishing.
+
+### Changed
+
+- `.github/workflows/npm-publish.yml` publishes through npm Trusted Publishing
+  (OIDC) with the existing `id-token: write` permission. No long-lived
+  `NPM_TOKEN` secret is used. This release exists to validate that binding.
+
 ## [0.3.0] - 2026-11-01
 
 ### Changed

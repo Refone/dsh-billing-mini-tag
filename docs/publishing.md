@@ -7,22 +7,25 @@
 
 - [x] `package.json` 的 `keywords` 含 `dsh-plugin`
 - [x] README（中英）含可复制的安装命令
-      `dsh plugin --profile web add github:Refone/dsh-billing-mini-tag`
+      `dsh plugin --profile web add dsh-billing-mini-tag`
 - [x] `src/index.js` 导出 `apply(ctx)` 与 `inject`
 - [x] `package.json#dsh.bundle.patch` 指向 `cordis.patch.yml`
 - [x] `dsh.client` 声明 `platform: "web"` 与宿主注入的客户端包
-- [x] `engines.dsh` 声明最低 DSH 版本（`>=0.1.5-rc.3`）
+- [x] `engines.dsh` 声明最低 DSH 版本（`>=0.2.0`）
 - [x] `repository` / `homepage` / `bugs` 指向 GitHub 仓库
 - [x] `LICENSE`（MIT）、`CHANGELOG.md`、英文 + 中文 README
-- [x] `pnpm pack --dry-run` 内容物正确（`src/`、`cordis.patch.yml`、README、
+- [x] `npm pack --dry-run` 内容物正确（`src/`、`cordis.patch.yml`、README、
       LICENSE、截图）
 - [x] CI（`.github/workflows/release-check.yml`）在每次 push / PR 时跑上述检查
+- [x] CD（`.github/workflows/npm-publish.yml`）在 GitHub Release 发布时走
+      npm Trusted Publishing 自动发包
 
 本地复核：
 
 ```sh
 node scripts/check-release.mjs
-pnpm pack --dry-run
+npm test
+npm pack --dry-run
 ```
 
 ## 2. GitHub 仓库设置（只能手动/API 完成）
@@ -43,43 +46,58 @@ gh repo edit Refone/dsh-billing-mini-tag \
   --add-topic dsh-plugin --add-topic dsh --add-topic deepseek-harness
 ```
 
-## 3. 打标签与发布
+## 3. npm Trusted Publisher（只在首次配置/更换 workflow 时改）
 
-当前唯一版本是 **0.1.0（初始版本）**，`package.json`、CHANGELOG 与 README 中
-的固定版本链接都对齐到 `v0.1.0`。发布新版本时：
+npm 网页 → 包 **dsh-billing-mini-tag** → **Settings → Trusted Publisher**：
+
+- Organization or user: `Refone`
+- Repository: `dsh-billing-mini-tag`
+- Workflow filename: `npm-publish.yml`
+- Environment name: 留空
+- Allowed actions: 勾选 **npm publish**（`npm stage publish` 默认总是允许）
+
+首次配置或修改后，状态是 **Pending validation**。npm 要求在截止时间前成功发布
+一次来验证配置；看到 `Pending validation` 时不要拖到截止时间之后。
+
+workflow 里已经声明了所需的 OIDC 权限：
+
+```yaml
+permissions:
+  contents: read
+  id-token: write
+```
+
+不需要 `NPM_TOKEN` secret，也不要再用本机 token 手动 `npm publish`。
+
+## 4. 打标签、发 Release、自动发包
+
+当前版本以 `package.json#version` 为准。发布新版本时：
 
 ```sh
 # 1. 改 package.json#version 与 CHANGELOG.md
 # 2. 复核
 node scripts/check-release.mjs
-pnpm pack --dry-run
+npm test
+npm pack --dry-run
 # 3. 提交、打标签、推送
 git add -A
-git commit -m "release: v0.1.0"
-git tag -a v0.1.0 -m "dsh-billing-mini-tag v0.1.0"
+git commit -m "release: v0.3.1"
+git tag -a v0.3.1 -m "dsh-billing-mini-tag v0.3.1"
 git push origin main --tags
 ```
 
-随后在 GitHub 的 **Releases** 页面基于 `v0.1.0` 创建 Release，把
-`pnpm pack` 生成的 `dsh-billing-mini-tag-0.1.0.tgz` 作为附件上传；README 中的
-固定版本安装命令依赖这个 tag 的源码包。
+然后在 GitHub 的 **Releases** 页面基于 `v0.3.1` 创建 Release（**Published**，
+不是 draft），把 `npm pack` 生成的 `dsh-billing-mini-tag-0.3.1.tgz` 作为附件上传。
+README 中的固定版本安装命令依赖这个 tag 的源码包。
 
-## 4. 可选：发布到 npm
+Release 发布后，`.github/workflows/npm-publish.yml` 会自动：
 
-包已去掉 `private: true`，并带齐 `files`、`repository`、`license`。若 npm 上的
-`dsh-billing-mini-tag` 名称可用：
+1. checkout 该 tag；
+2. 跑 `node scripts/check-release.mjs` 和 `npm test`；
+3. 用 Trusted Publishing（OIDC）执行 `npm publish`。
 
-```sh
-npm publish --access public
-```
-
-发布后可以再补一条更短的安装命令：
-
-```sh
-dsh plugin --profile web add dsh-billing-mini-tag
-```
-
-并同步更新 README 的 Install 一节与 `package.json#version`。
+workflow 里没有 `npm ci`：这个包没有运行依赖，也没有 `package-lock.json`，
+`npm ci` 会直接以 `EUSAGE` 失败。不要把它加回来。
 
 ## 5. 收录到社区目录（可选）
 

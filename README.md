@@ -29,7 +29,7 @@ Restart `dsh web`, refresh the page, then send a message. To pin a release, or
 to track the repository instead of the npm package:
 
 ```sh
-dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.0.tar.gz
+dsh plugin --profile web add https://github.com/Refone/dsh-billing-mini-tag/archive/refs/tags/v0.3.1.tar.gz
 dsh plugin --profile web add github:Refone/dsh-billing-mini-tag
 ```
 
